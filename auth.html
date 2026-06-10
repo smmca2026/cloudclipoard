@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+    <title>Cloud Clipboard</title>
+
+    <style>
+
+        body {
+
+            margin: 0;
+
+            height: 100vh;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            background: linear-gradient(
+                to right,
+                #141e30,
+                #243b55
+            );
+
+            font-family: Arial;
+
+        }
+
+        .container {
+
+            width: 350px;
+
+            background: white;
+
+            padding: 40px;
+
+            border-radius: 15px;
+
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+
+            text-align: center;
+
+        }
+
+        h1 {
+
+            margin-bottom: 25px;
+
+            color: #333;
+
+        }
+
+        .password-box {
+
+            position: relative;
+
+            width: 100%;
+
+        }
+
+        input {
+
+            width: 100%;
+
+            padding: 12px;
+
+            margin: 10px 0;
+
+            border: 1px solid #ccc;
+
+            border-radius: 8px;
+
+            font-size: 16px;
+
+            box-sizing: border-box;
+
+        }
+
+        .eye {
+
+            position: absolute;
+
+            right: 15px;
+
+            top: 22px;
+
+            cursor: pointer;
+
+            font-size: 18px;
+
+        }
+
+        button {
+
+            width: 100%;
+
+            padding: 12px;
+
+            margin-top: 15px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #6a11cb;
+
+            color: white;
+
+            font-size: 16px;
+
+            cursor: pointer;
+
+        }
+
+        button:hover {
+
+            background: #2575fc;
+
+        }
+
+        .toggle {
+
+            margin-top: 20px;
+
+            color: blue;
+
+            cursor: pointer;
+
+        }
+
+        #loginForm {
+
+            display: none;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1 id="title">
+            Create Account
+        </h1>
+
+        <!-- Signup Form -->
+
+        <form
+        id="signupForm"
+        action="signup"
+        method="post">
+
+            <input
+            type="email"
+            name="email"
+            placeholder="Enter Email"
+            required>
+
+            <div class="password-box">
+
+                <input
+                type="password"
+                name="password"
+                id="signupPassword"
+                placeholder="Enter Password"
+                required>
+
+                <span
+                class="eye"
+                onclick="togglePassword('signupPassword')">
+
+                    🫣
+
+                </span>
+
+            </div>
+
+            <button type="submit">
+
+                Signup
+
+            </button>
+
+        </form>
+
+        <!-- Login Form -->
+
+        <form
+        id="loginForm"
+        action="login"
+        method="post">
+
+            <input
+            type="email"
+            name="email"
+            placeholder="Enter Email"
+            required>
+
+            <div class="password-box">
+
+                <input
+                type="password"
+                name="password"
+                id="loginPassword"
+                placeholder="Enter Password"
+                required>
+
+                <span
+                class="eye"
+                onclick="togglePassword('loginPassword')">
+
+                    👁
+
+                </span>
+
+            </div>
+
+            <button type="submit">
+
+                Login
+
+            </button>
+
+        </form>
+
+        <div
+        class="toggle"
+        onclick="toggleForm()">
+
+            Already have account? Login
+
+        </div>
+
+        <br>
+
+<a href="forgot.html">
+
+Forgot Password?
+
+</a>
+
+    </div>
+
+    <script>
+
+        let login = false;
+
+        function toggleForm() {
+
+            login = !login;
+
+            if(login) {
+
+                document
+                .getElementById("signupForm")
+                .style.display = "none";
+
+                document
+                .getElementById("loginForm")
+                .style.display = "block";
+
+                document
+                .getElementById("title")
+                .innerText = "Login";
+
+                document
+                .querySelector(".toggle")
+                .innerText =
+                "Create new account? Signup";
+
+            }
+
+            else {
+
+                document
+                .getElementById("signupForm")
+                .style.display = "block";
+
+                document
+                .getElementById("loginForm")
+                .style.display = "none";
+
+                document
+                .getElementById("title")
+                .innerText = "Create Account";
+
+                document
+                .querySelector(".toggle")
+                .innerText =
+                "Already have account? Login";
+
+            }
+
+        }
+
+        function togglePassword(id) {
+
+            let password =
+            document.getElementById(id);
+
+            if(password.type === "password") {
+
+                password.type = "text";
+
+            }
+
+            else {
+
+                password.type = "password";
+
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>

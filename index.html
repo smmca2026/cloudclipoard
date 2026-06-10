@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+    <title>Cloud Clipboard</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<!-- Logout -->
+
+<a href="logout" class="logout-btn">
+
+    Logout
+
+</a>
+
+<!-- 3 Dots -->
+
+<div class="menu-container">
+
+    <button class="menu-btn"
+    onclick="toggleMenu()">
+
+        ☁
+
+    </button>
+
+    <div class="menu-box"
+    id="menuBox">
+
+        <form
+id="uploadForm"
+enctype="multipart/form-data">
+
+    <input
+    type="file"
+    name="file"
+    id="file">
+
+    <br><br>
+
+    <button type="submit">
+
+        Upload File
+
+    </button>
+
+</form>
+        <br>
+
+       <a id="downloadLink">
+
+    <button type="button">
+
+        Download File
+
+    </button>
+
+</a>
+
+        <br><br>
+
+        <a href="cloudclipboard.apk" download>
+
+            <a id="downloadLink">
+
+<button>
+Download App
+</button>
+
+</a>
+        </a>
+
+    </div>
+
+</div>
+
+<!-- Main -->
+
+<div class="container">
+
+    <h1>
+
+        ☁ Cloud Clipboard
+
+    </h1>
+
+    <textarea
+    id="clipboard"
+    placeholder="Type something here...">
+    </textarea>
+
+    <div class="buttons">
+
+        <button onclick="saveClipboard()">
+
+            Save
+
+        </button>
+
+        <button onclick="getClipboard()">
+
+            Get
+
+        </button>
+
+    </div>
+
+    <textarea
+    id="output"
+    placeholder="Output..."
+    readonly>
+    </textarea>
+
+</div>
+
+<script src="script.js"></script>
+
+<script>
+
+function toggleMenu() {
+
+    let menu =
+    document.getElementById("menuBox");
+
+    if(menu.style.display === "block") {
+
+        menu.style.display = "none";
+
+    }
+
+    else {
+
+        menu.style.display = "block";
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
