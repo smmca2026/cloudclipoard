@@ -10,20 +10,29 @@ extends HttpServlet {
         HttpServletResponse res
     ) throws ServletException, IOException {
 
+        String fileName = req.getParameter("file");
+
         String projectPath =
         getServletContext()
         .getRealPath("");
 
-        BufferedReader br =
-        new BufferedReader(
-        new FileReader(
-        projectPath +
-        "latest.txt"));
+        if(fileName == null || fileName.trim().isEmpty()) {
+            File latestFile = new File(projectPath + "latest.txt");
+            if(latestFile.exists()) {
+                BufferedReader br =
+                new BufferedReader(
+                new FileReader(latestFile));
 
-        String fileName =
-        br.readLine();
+                fileName = br.readLine();
+                br.close();
+            }
+        }
 
-        br.close();
+        if(fileName == null || fileName.trim().isEmpty()) {
+            res.setContentType("text/plain");
+            res.getWriter().write("File Not Found");
+            return;
+        }
 
         String path =
         "C:/uploads/";
