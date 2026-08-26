@@ -35,7 +35,7 @@ extends HttpServlet {
         }
 
         String path =
-        "C:/uploads/";
+        System.getProperty("os.name").toLowerCase().contains("win") ? "C:/uploads/" : "/uploads/";
 
         File file =
         new File(path + fileName);
