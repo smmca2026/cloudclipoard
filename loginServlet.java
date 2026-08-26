@@ -22,7 +22,7 @@ public class loginServlet extends HttpServlet {
 
                 "root",
 
-                "2822"
+                "Digi@2024"
 
             );
 
@@ -105,35 +105,42 @@ public class loginServlet extends HttpServlet {
             ResultSet rs =
             ps.executeQuery();
 
+            String acceptHeader = req.getHeader("Accept");
+            String requestedWith = req.getHeader("X-Requested-With");
+            boolean isAjax = (acceptHeader != null && acceptHeader.contains("application/json")) || "XMLHttpRequest".equals(requestedWith);
+
             if(rs.next()) {
+                HttpSession session = req.getSession();
+                session.setAttribute("email", email);
 
-                res.sendRedirect("index.html");
-
+                if(isAjax) {
+                    res.setContentType("application/json");
+                    res.setCharacterEncoding("UTF-8");
+                    res.getWriter().print("{\"success\":true,\"redirect\":\"index.html\",\"message\":\"Login successful!\"}");
+                } else {
+                    res.sendRedirect("index.html");
+                }
+            } else {
+                if(isAjax) {
+                    res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    res.setContentType("application/json");
+                    res.setCharacterEncoding("UTF-8");
+                    res.getWriter().print("{\"success\":false,\"message\":\"Invalid Email or Password. Please try again.\"}");
+                } else {
+                    String encodedEmail = java.net.URLEncoder.encode(email != null ? email : "", "UTF-8");
+                    res.sendRedirect("auth.html?error=invalid_password&email=" + encodedEmail);
+                }
             }
-
-            else {
-
-    res.getWriter().println(
-
-    "<script>" +
-
-    "alert('Invalid Email or Password');" +
-
-    "window.location='auth.html';" +
-
-    "</script>"
-
-    );
-
-}
+        } catch(Exception e) {
+            String acceptHeader = req.getHeader("Accept");
+            if (acceptHeader != null && acceptHeader.contains("application/json")) {
+                res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                res.setContentType("application/json");
+                res.setCharacterEncoding("UTF-8");
+                res.getWriter().print("{\"success\":false,\"message\":\"Database Error: " + e.getMessage() + "\"}");
+            } else {
+                res.sendRedirect("auth.html?error=db_error");
+            }
         }
-
-        catch(Exception e) {
-
-            res.getWriter().println(e);
-
-        }
-
     }
-
 }

@@ -2,6 +2,7 @@ import java.io.*;
 import java.sql.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
+import java.security.MessageDigest;
 
 public class resetPasswordServlet extends HttpServlet {
 
@@ -22,7 +23,7 @@ public class resetPasswordServlet extends HttpServlet {
 
             "root",
 
-            "2822"
+            "Digi@2024"
 
             );
 
@@ -31,6 +32,40 @@ public class resetPasswordServlet extends HttpServlet {
         catch(Exception e) {
 
             e.printStackTrace();
+
+        }
+
+    }
+
+    // Password Hash Method
+    private String hashPassword(String password) {
+
+        try {
+
+            MessageDigest md =
+            MessageDigest.getInstance("SHA-256");
+
+            byte[] hash =
+            md.digest(password.getBytes());
+
+            StringBuilder sb =
+            new StringBuilder();
+
+            for(byte b : hash) {
+
+                sb.append(
+                    String.format("%02x", b)
+                );
+
+            }
+
+            return sb.toString();
+
+        }
+
+        catch(Exception e) {
+
+            return null;
 
         }
 
@@ -56,6 +91,9 @@ public class resetPasswordServlet extends HttpServlet {
 
         try {
 
+            String hashedPassword =
+            hashPassword(newPassword);
+
             PreparedStatement ps =
             con.prepareStatement(
 
@@ -65,7 +103,7 @@ public class resetPasswordServlet extends HttpServlet {
 
             ps.setString(
             1,
-            newPassword
+            hashedPassword
             );
 
             ps.setString(
@@ -73,49 +111,40 @@ public class resetPasswordServlet extends HttpServlet {
             email
             );
 
-            int rows =
-            ps.executeUpdate();
+            int rows = ps.executeUpdate();
+
+            String acceptHeader = req.getHeader("Accept");
+            String requestedWith = req.getHeader("X-Requested-With");
+            boolean isAjax = (acceptHeader != null && acceptHeader.contains("application/json")) || "XMLHttpRequest".equals(requestedWith);
 
             if(rows > 0) {
-
-                res.getWriter().println(
-
-                "<script>" +
-
-                "alert('Password Updated Successfully');" +
-
-                "window.location='auth.html';" +
-
-                "</script>"
-
-                );
-
+                if(isAjax) {
+                    res.setContentType("application/json");
+                    res.setCharacterEncoding("UTF-8");
+                    res.getWriter().print("{\"success\":true,\"message\":\"Password Updated Successfully! Please log in.\",\"redirect\":\"auth.html\"}");
+                } else {
+                    res.sendRedirect("auth.html?msg=" + java.net.URLEncoder.encode("Password Updated Successfully! Please login.", "UTF-8"));
+                }
+            } else {
+                if(isAjax) {
+                    res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    res.setContentType("application/json");
+                    res.setCharacterEncoding("UTF-8");
+                    res.getWriter().print("{\"success\":false,\"message\":\"Invalid Email or Session Expired.\"}");
+                } else {
+                    res.sendRedirect("forgot.html?error=invalid_email");
+                }
             }
-
-            else {
-
-    res.getWriter().println(
-
-    "<script>" +
-
-    "alert('Invalid Email');" +
-
-    "window.location='forgot.html';" +
-
-    "</script>"
-
-    );
-
-}
-
+        } catch(Exception e) {
+            String acceptHeader = req.getHeader("Accept");
+            if (acceptHeader != null && acceptHeader.contains("application/json")) {
+                res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                res.setContentType("application/json");
+                res.setCharacterEncoding("UTF-8");
+                res.getWriter().print("{\"success\":false,\"message\":\"" + e.getMessage() + "\"}");
+            } else {
+                res.sendRedirect("forgot.html?error=failed");
+            }
         }
-
-        catch(Exception e) {
-
-            res.getWriter().println(e);
-
-        }
-
     }
-
 }

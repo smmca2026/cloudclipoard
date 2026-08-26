@@ -22,7 +22,7 @@ public class signupServlet extends HttpServlet {
 
                 "root",
 
-                "2822"
+                "Digi@2024"
 
             );
 
@@ -99,69 +99,51 @@ public class signupServlet extends HttpServlet {
             ResultSet rs =
             check.executeQuery();
 
-            res.setContentType("text/html");
-
-            PrintWriter out =
-            res.getWriter();
+            String acceptHeader = req.getHeader("Accept");
+            String requestedWith = req.getHeader("X-Requested-With");
+            boolean isAjax = (acceptHeader != null && acceptHeader.contains("application/json")) || "XMLHttpRequest".equals(requestedWith);
 
             // EMAIL ALREADY EXISTS
             if(rs.next()) {
-
-                out.println(
-
-                "<script>" +
-
-                "alert('Email already exists');" +
-
-                "window.location='auth.html';" +
-
-                "</script>"
-
-                );
-
-            }
-
-            else {
-
+                if(isAjax) {
+                    res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    res.setContentType("application/json");
+                    res.setCharacterEncoding("UTF-8");
+                    res.getWriter().print("{\"success\":false,\"message\":\"Email is already registered! Please log in.\"}");
+                } else {
+                    String encodedEmail = java.net.URLEncoder.encode(email != null ? email : "", "UTF-8");
+                    res.sendRedirect("auth.html?error=email_exists&email=" + encodedEmail + "&tab=signup");
+                }
+            } else {
                 // HASH PASSWORD
-                String hashedPassword =
-                hashPassword(password);
+                String hashedPassword = hashPassword(password);
 
-                PreparedStatement ps =
-                con.prepareStatement(
-
-                "INSERT INTO users(email,password) VALUES(?,?)"
-
+                PreparedStatement ps = con.prepareStatement(
+                    "INSERT INTO users(email,password) VALUES(?,?)"
                 );
-
                 ps.setString(1, email);
-
                 ps.setString(2, hashedPassword);
-
                 ps.executeUpdate();
 
-                out.println(
-
-                "<script>" +
-
-                "alert('Signup Successful');" +
-
-                "window.location='auth.html';" +
-
-                "</script>"
-
-                );
-
+                if(isAjax) {
+                    res.setContentType("application/json");
+                    res.setCharacterEncoding("UTF-8");
+                    res.getWriter().print("{\"success\":true,\"message\":\"🎉 Account created successfully! Please log in.\"}");
+                } else {
+                    String encodedEmail = java.net.URLEncoder.encode(email != null ? email : "", "UTF-8");
+                    res.sendRedirect("auth.html?signup=success&email=" + encodedEmail);
+                }
             }
-
+        } catch(Exception e) {
+            String acceptHeader = req.getHeader("Accept");
+            if (acceptHeader != null && acceptHeader.contains("application/json")) {
+                res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                res.setContentType("application/json");
+                res.setCharacterEncoding("UTF-8");
+                res.getWriter().print("{\"success\":false,\"message\":\"Database Error: " + e.getMessage() + "\"}");
+            } else {
+                res.sendRedirect("auth.html?error=db_error&tab=signup");
+            }
         }
-
-        catch(Exception e) {
-
-            res.getWriter().println(e);
-
-        }
-
     }
-
 }

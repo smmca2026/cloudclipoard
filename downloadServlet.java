@@ -12,30 +12,22 @@ extends HttpServlet {
 
         String fileName = req.getParameter("file");
 
-        String projectPath =
-        getServletContext()
-        .getRealPath("");
-
         if(fileName == null || fileName.trim().isEmpty()) {
+            String projectPath = getServletContext().getRealPath("");
             File latestFile = new File(projectPath + "latest.txt");
             if(latestFile.exists()) {
-                BufferedReader br =
-                new BufferedReader(
-                new FileReader(latestFile));
-
+                BufferedReader br = new BufferedReader(new FileReader(latestFile));
                 fileName = br.readLine();
                 br.close();
             }
         }
 
         if(fileName == null || fileName.trim().isEmpty()) {
-            res.setContentType("text/plain");
-            res.getWriter().write("File Not Found");
+            res.getWriter().write("No file available for download");
             return;
         }
 
-        String path =
-        System.getProperty("os.name").toLowerCase().contains("win") ? "C:/uploads/" : "/uploads/";
+        String path = "C:/uploads/";
 
         File file =
         new File(path + fileName);

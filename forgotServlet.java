@@ -42,7 +42,7 @@ public class forgotServlet extends HttpServlet {
 
         // YOUR GMAIL
         String from =
-        "muthulakshmi2002apk@gmail";
+        "muthulakshmi2002apk@gmail.com";
 
         // APP PASSWORD
         String password =
@@ -134,33 +134,27 @@ jakarta.mail.Session.getInstance(
             // SEND EMAIL
             Transport.send(message);
 
-            res.setContentType(
-            "text/html"
-            );
+            String acceptHeader = req.getHeader("Accept");
+            String requestedWith = req.getHeader("X-Requested-With");
+            boolean isAjax = (acceptHeader != null && acceptHeader.contains("application/json")) || "XMLHttpRequest".equals(requestedWith);
 
-            PrintWriter out =
-            res.getWriter();
-
-            out.println(
-
-            "<script>" +
-
-            "alert('OTP Sent Successfully');" +
-
-            "window.location='otp.html';" +
-
-            "</script>"
-
-            );
-
+            if(isAjax) {
+                res.setContentType("application/json");
+                res.setCharacterEncoding("UTF-8");
+                res.getWriter().print("{\"success\":true,\"message\":\"OTP Sent Successfully!\",\"redirect\":\"otp.html\"}");
+            } else {
+                res.sendRedirect("otp.html?msg=" + java.net.URLEncoder.encode("OTP Sent Successfully", "UTF-8"));
+            }
+        } catch(Exception e) {
+            String acceptHeader = req.getHeader("Accept");
+            if (acceptHeader != null && acceptHeader.contains("application/json")) {
+                res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                res.setContentType("application/json");
+                res.setCharacterEncoding("UTF-8");
+                res.getWriter().print("{\"success\":false,\"message\":\"" + e.getMessage() + "\"}");
+            } else {
+                res.sendRedirect("forgot.html?error=failed");
+            }
         }
-
-        catch(Exception e) {
-
-            res.getWriter().println(e);
-
-        }
-
     }
-
 }

@@ -21,45 +21,27 @@ public class verifyOtpServlet extends HttpServlet {
         String realOtp =
         (String) session.getAttribute("otp");
 
-        if(userOtp.equals(realOtp)) {
+        String acceptHeader = req.getHeader("Accept");
+        String requestedWith = req.getHeader("X-Requested-With");
+        boolean isAjax = (acceptHeader != null && acceptHeader.contains("application/json")) || "XMLHttpRequest".equals(requestedWith);
 
-            res.setContentType(
-            "text/html"
-            );
-
-            PrintWriter out =
-            res.getWriter();
-
-            out.println(
-
-            "<script>" +
-
-            "alert('OTP Verified Successfully');" +
-
-            "window.location='resetPassword.html';" +
-
-            "</script>"
-
-            );
-
+        if(userOtp != null && realOtp != null && userOtp.trim().equals(realOtp.trim())) {
+            if(isAjax) {
+                res.setContentType("application/json");
+                res.setCharacterEncoding("UTF-8");
+                res.getWriter().print("{\"success\":true,\"message\":\"OTP Verified Successfully!\",\"redirect\":\"resetPassword.html\"}");
+            } else {
+                res.sendRedirect("resetPassword.html");
+            }
+        } else {
+            if(isAjax) {
+                res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                res.setContentType("application/json");
+                res.setCharacterEncoding("UTF-8");
+                res.getWriter().print("{\"success\":false,\"message\":\"Invalid or expired OTP. Please try again.\"}");
+            } else {
+                res.sendRedirect("otp.html?error=invalid_otp");
+            }
         }
-
-        else {
-
-            res.getWriter().println(
-
-            "<script>" +
-
-            "alert('Invalid OTP');" +
-
-            "window.location='otp.html';" +
-
-            "</script>"
-
-            );
-
-        }
-
     }
-
 }

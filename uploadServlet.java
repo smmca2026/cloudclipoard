@@ -19,14 +19,14 @@ public class uploadServlet extends HttpServlet {
         filePart.getSubmittedFileName();
 
         String uploadPath =
-        System.getProperty("os.name").toLowerCase().contains("win") ? "C:/uploads" : "/uploads";
+        "C:/uploads";
 
         File uploadDir =
         new File(uploadPath);
 
         if(!uploadDir.exists()) {
 
-            uploadDir.mkdir();
+            uploadDir.mkdirs();
 
         }
 

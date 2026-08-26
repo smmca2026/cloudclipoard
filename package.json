@@ -1,0 +1,20 @@
+{
+  "name": "cloudclipboard",
+  "version": "1.0.0",
+  "description": "Cloud Clipboard Web Application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "localtunnel": "^2.0.2",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.9.7",
+    "nodemailer": "^6.9.13"
+  }
+}
