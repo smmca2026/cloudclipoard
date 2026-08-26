@@ -95,7 +95,7 @@ myapp/
 ### Steps:
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/smmca2026/cloudclipboard.git
+   git clone https://github.com/smmca2026/cloudclipoard.git
    ```
 2. **Deploy on Apache Tomcat**:
    - Copy the project directory to Tomcat's `webapps/` folder, or configure the project root in Tomcat's `server.xml`.
