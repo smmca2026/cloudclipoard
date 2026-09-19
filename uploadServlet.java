@@ -4,8 +4,8 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.MultipartConfig;
 
 @MultipartConfig
-
 public class uploadServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
 
     protected void doPost(
         HttpServletRequest req,

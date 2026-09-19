@@ -4,6 +4,7 @@ import javax.servlet.http.*;
 import java.sql.*;
 
 public class ClipboardServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
 
     Connection con;
 

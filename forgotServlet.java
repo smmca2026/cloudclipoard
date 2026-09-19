@@ -7,6 +7,7 @@ import jakarta.mail.*;
 import jakarta.mail.internet.*;
 
 public class forgotServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
 
     private String extractJsonField(String json, String field) {
         if (json == null) return null;

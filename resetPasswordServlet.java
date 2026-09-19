@@ -5,6 +5,7 @@ import javax.servlet.http.*;
 import java.security.MessageDigest;
 
 public class resetPasswordServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
 
     Connection con;
 

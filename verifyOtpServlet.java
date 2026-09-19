@@ -3,6 +3,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 public class verifyOtpServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
 
     private String extractJsonField(String json, String field) {
         if (json == null) return null;
