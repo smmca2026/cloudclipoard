@@ -4,16 +4,33 @@ import javax.servlet.http.*;
 
 public class verifyOtpServlet extends HttpServlet {
 
+    private String extractJsonField(String json, String field) {
+        if (json == null) return null;
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile("\"" + field + "\"\\s*:\\s*\"([^\"]+)\"");
+        java.util.regex.Matcher m = p.matcher(json);
+        if (m.find()) return m.group(1);
+        return null;
+    }
+
     protected void doPost(
-
         HttpServletRequest req,
-
         HttpServletResponse res
-
     ) throws ServletException, IOException {
 
-        String userOtp =
-        req.getParameter("otp");
+        String userOtp = req.getParameter("otp");
+
+        if (userOtp == null) {
+            try {
+                StringBuilder sb = new StringBuilder();
+                BufferedReader reader = req.getReader();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                }
+                String body = sb.toString();
+                userOtp = extractJsonField(body, "otp");
+            } catch(Exception ignored) {}
+        }
 
         HttpSession session =
         req.getSession();

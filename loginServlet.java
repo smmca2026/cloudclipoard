@@ -64,35 +64,46 @@ public class loginServlet extends HttpServlet {
         }
 
         catch(Exception e) {
-
             return null;
-
         }
+    }
 
+    // Helper to extract field from JSON string
+    private String extractJsonField(String json, String field) {
+        if (json == null) return null;
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile("\"" + field + "\"\\s*:\\s*\"([^\"]+)\"");
+        java.util.regex.Matcher m = p.matcher(json);
+        if (m.find()) return m.group(1);
+        return null;
     }
 
     protected void doPost(
-
         HttpServletRequest req,
-
         HttpServletResponse res
-
     ) throws ServletException, IOException {
 
-        String email =
-        req.getParameter("email");
+        String email = req.getParameter("email");
+        String password = req.getParameter("password");
 
-        String password =
-        req.getParameter("password");
+        if (email == null || password == null) {
+            try {
+                StringBuilder sb = new StringBuilder();
+                BufferedReader reader = req.getReader();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                }
+                String body = sb.toString();
+                if (email == null) email = extractJsonField(body, "email");
+                if (password == null) password = extractJsonField(body, "password");
+            } catch(Exception ignored) {}
+        }
 
         try {
-
             // Hash entered password
-            String hashedPassword =
-            hashPassword(password);
+            String hashedPassword = hashPassword(password);
 
-            PreparedStatement ps =
-            con.prepareStatement(
+            PreparedStatement ps = con.prepareStatement(
 
             "SELECT * FROM users WHERE email=? AND password=?"
 
