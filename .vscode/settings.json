@@ -1,8 +1,7 @@
 {
     "java.project.referencedLibraries": [
+        "WEB-INF/lib/*.jar",
         "WEB-INF/lib/**/*.jar"
     ],
-    "java.project.sourcePaths": [
-        "."
-    ]
+    "java.configuration.updateBuildConfiguration": "automatic"
 }
